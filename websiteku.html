@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Marketplace Jasa - Dashboard, Tawarkan & Cari Jasa</title>
+  <!-- Google Fonts Roboto -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <!-- Material Icons CDN -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    /* Reset */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #f5f5f7;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 20px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      user-select:none;
+    }
+    #app {
+      background: #151529;
+      border-radius: 20px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.75);
+      width: 960px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid #483c99;
+    }
+    header {
+      padding: 24px 30px 20px;
+      background: linear-gradient(90deg, #5a4f99, #667eea);
+      font-size: 2.2rem;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 1.5px;
+      color: #e9e9ff;
+      text-shadow: 0 1px 8px rgba(0,0,0,0.45);
+      user-select:none;
+    }
+    /* Navigation tabs */
+    nav {
+      display: flex;
+      background: #221f3b;
+      border-bottom: 1px solid #483c99;
+      padding-left: 20px;
+    }
+    nav button {
+      padding: 18px 30px;
+      border: none;
+      background: #221f3b;
+      color: #a8a6b7;
+      font-weight: 700;
+      font-size: 1.15rem;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.35s cubic-bezier(0.4,0,0.2,1), color 0.35s cubic-bezier(0.4,0,0.2,1);
+      position: relative;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-right: 12px;
+      border-radius: 12px 12px 0 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    nav button:last-child {
+      margin-right: 0;
+    }
+    nav button:hover:not(.active) {
+      background: #453f7b;
+      color: #c7c7f1;
+    }
+    nav button.active {
+      background: linear-gradient(45deg, #8c90f8, #6d7eff);
+      color: #fff;
+      box-shadow:
+        0 0 10px #a7a9ff,
+        inset 0 0 14px #c0c2ff;
+      z-index: 10;
+      letter-spacing: 0.12em;
+    }
+    nav button.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 20%;
+      width: 60%;
+      height: 4px;
+      background: #fff;
+      border-radius: 4px 4px 0 0;
+      box-shadow: 0 0 12px #fff;
+    }
+    main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 30px 35px;
+      background: #151529;
+      scrollbar-width: thin;
+      scrollbar-color: #6d7efd transparent;
+    }
+    /* Scrollbar Webkit */
+    main::-webkit-scrollbar {
+      width: 10px;
+    }
+    main::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    main::-webkit-scrollbar-thumb {
+      background: #6d7efd;
+      border-radius: 20px;
+    }
+    /* Headings */
+    h2 {
+      margin-top: 0;
+      margin-bottom: 28px;
+      font-weight: 700;
+      font-size: 1.8rem;
+      color: #c7c7f1;
+      user-select:none;
+      text-shadow: 0 0 9px #7777cc88;
+    }
+    /* Offer Service Form */
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      max-width: 620px;
+      margin: 0 auto;
+    }
+    label {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #bcbcfb;
+      user-select:none;
+    }
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      padding: 16px 18px;
+      border-radius: 16px;
+      border: none;
+      font-size: 1.15rem;
+      font-family: inherit;
+      resize: vertical;
+      background: #25254a;
+      color: #f0f0f5;
+      box-shadow:
+        inset 1px 1px 10px rgba(255, 255, 255, 0.07),
+        inset -1px -1px 10px rgba(0,0,0,0.75);
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    textarea:focus {
+      background: #474896;
+      outline: none;
+      box-shadow:
+        0 0 10px #8c8efe,
+        inset 0 0 10px #a8acff;
+      color: #fff;
+    }
+    textarea {
+      min-height: 120px;
+    }
+    button[type="submit"] {
+      background: linear-gradient(45deg, #5a4f99, #667eea);
+      border: none;
+      padding: 18px 0;
+      color: #f0f0f5;
+      font-weight: 700;
+      font-size: 1.4rem;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: background 0.3s, box-shadow 0.3s;
+      user-select: none;
+      box-shadow:
+        0 6px 14px rgba(108,112,250,0.75);
+      max-width: 300px;
+      align-self: center;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    button[type="submit"]:hover {
+      background: linear-gradient(45deg, #7e75ff, #96a5ff);
+      box-shadow:
+        0 8px 28px rgba(134,140,255,0.95);
+    }
+    /* Find Services List */
+    .search-bar {
+      margin-bottom: 32px;
+      max-width: 620px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .search-bar input {
+      width: 100%;
+      padding: 18px;
+      border-radius: 18px;
+      border: none;
+      font-size: 1.15rem;
+      font-family: inherit;
+      background: #25254a;
+      color: #f0f0f5;
+      outline: none;
+      box-shadow:
+        inset 1px 1px 10px rgba(255, 255, 255, 0.07),
+        inset -2px -2px 12px rgba(0,0,0,0.75);
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+    .search-bar input::placeholder {
+      color: #b1b1e2;
+      user-select: none;
+    }
+    .search-bar input:focus {
+      background: #474896;
+      box-shadow:
+        0 0 14px #8c8efe,
+        inset 0 0 12px #a8acff;
+    }
+    /* Service Card */
+    .service-card {
+      background: #29294d;
+      border-radius: 24px;
+      padding: 22px 28px;
+      margin-bottom: 28px;
+      box-shadow:
+        0 6px 16px rgba(0,0,0,0.28),
+        inset 0 0 18px rgba(168,172,255,0.25);
+      cursor: default;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      max-width: 620px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .service-card:hover {
+      transform: translateY(-5px);
+      box-shadow:
+        0 12px 35px rgba(94,95,255,0.75),
+        inset 0 0 24px rgba(168,172,255,0.45);
+    }
+    .service-card h3 {
+      margin: 0 0 10px 0;
+      font-size: 1.35rem;
+      color: #d3ccff;
+      user-select: none;
+      text-shadow: 0 0 8px #9c95ff44;
+    }
+    .service-card p {
+      margin: 0 0 14px 0;
+      font-size: 1.05rem;
+      color: #babbee;
+      flex-grow: 1;
+      user-select: none;
+      line-height: 1.4;
+    }
+    .price-commission {
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: #bbaaff;
+      user-select: none;
+      margin-bottom: 14px;
+      letter-spacing: 0.06em;
+      user-select:none;
+    }
+    .btn-request {
+      align-self: flex-end;
+      background: linear-gradient(45deg, #7a74f7, #8a89ff);
+      border: none;
+      padding: 12px 30px;
+      border-radius: 36px;
+      color: #f0f0f5;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.3s, box-shadow 0.3s;
+      user-select: none;
+      box-shadow:
+        0 4px 16px rgba(135,136,252,0.75);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.15rem;
+    }
+    .btn-request:hover {
+      background: linear-gradient(45deg, #9084ff, #a3a9ff);
+      box-shadow:
+        0 8px 24px rgba(158,159,255,0.95);
+    }
+    .btn-request .material-icons {
+      font-size: 1.5rem;
+    }
+    /* Commission Message UI */
+    #commissionMessage {
+      position: fixed;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #6d7efddd;
+      color: #f0f0f5;
+      padding: 16px 34px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 1.3rem;
+      box-shadow: 0 8px 28px rgba(107,115,255,0.85);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      max-width: 88vw;
+      text-align: center;
+      user-select: none;
+      z-index: 1000;
+      text-shadow: 0 0 8px #bcc2ffdd;
+      letter-spacing: 0.03em;
+    }
+    #commissionMessage.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    /* Dashboard cards */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px 24px;
+      margin-bottom: 36px;
+      user-select:none;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .dash-card {
+      background: #2f2e5a;
+      border-radius: 32px;
+      padding: 32px 28px;
+      box-shadow:
+        0 8px 26px rgba(0,0,0,0.6),
+        inset 0 0 20px #8386ff9a;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #d7d7ff;
+      font-weight: 700;
+      font-size: 1.3rem;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      min-height: 180px;
+    }
+    .dash-card:hover {
+      transform: translateY(-7px);
+      box-shadow:
+        0 14px 38px rgba(100,105,255,0.9),
+        inset 0 0 28px #9fa4ffcc;
+    }
+    .dash-card .material-icons {
+      font-size: 56px;
+      color: #96a0ffcc;
+      margin-bottom: 18px;
+      text-shadow: 0 0 8px #b3b7ffdd;
+      user-select:none;
+    }
+    .dash-value {
+      font-size: 2.6rem;
+      letter-spacing: 0.07em;
+      margin-bottom: 10px;
+      user-select: text;
+    }
+    .dash-label {
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      user-select:none;
+      letter-spacing: 0.14em;
+      color: #e1e3ffbb;
+    }
+    /* Recent commissions list */
+    .recent-list {
+      max-height: 280px;
+      overflow-y: auto;
+      background: #252552cc;
+      border-radius: 28px;
+      padding: 18px 24px;
+      color: #d2d4ffcc;
+      box-shadow:
+        inset 0 0 22px #686bf5aa;
+      user-select:none;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .recent-item {
+      padding: 18px 14px;
+      border-bottom: 1px solid #484897bb;
+      font-size: 1.15rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.25s ease;
+      cursor: default;
+    }
+    .recent-item:last-child {
+      border-bottom: none;
+    }
+    .recent-item:hover {
+      background: #6466c122;
+    }
+    .recent-name {
+      font-weight: 700;
+      color: #babcff;
+      flex-grow: 1;
+      margin-right: 16px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      user-select: text;
+    }
+    .recent-commission {
+      font-weight: 700;
+      color: #96afff;
+      white-space: nowrap;
+      user-select: text;
+    }
+    /* No services msg */
+    #noServicesMsg {
+      text-align: center;
+      color: #8a8aba;
+      font-style: italic;
+      max-width: 620px;
+      margin: 40px auto 0;
+    }
+    #noCommissionMsg {
+      text-align: center;
+      color: #aaaaff77;
+      font-style: italic;
+      margin-top: 18px;
+      font-size: 1.1rem;
+    }
+
+    /* Responsiveness */
+    @media (max-width: 1024px) {
+      #app {
+        width: 720px;
+      }
+      .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 700px;
+      }
+      form, .search-bar, .service-card, .recent-list {
+        max-width: 640px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+    @media (max-width: 680px) {
+      #app {
+        width: 100%;
+        max-height: 90vh;
+      }
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+        max-width: 100%;
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+      form, .search-bar, .service-card, .recent-list {
+        max-width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+      button[type="submit"] {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app" role="main" aria-label="Aplikasi Marketplace Jasa Desktop">
+    <header>MARKETPLACE JASA</header>
+    <nav aria-label="Navigasi utama">
+      <button id="tabDashboard" class="active" aria-controls="dashboardSection" aria-selected="true" role="tab" tabindex="0" title="Dashboard">
+        <span class="material-icons" aria-hidden="true">dashboard</span> Dashboard
+      </button>
+      <button id="tabOffer" aria-controls="offerSection" aria-selected="false" role="tab" tabindex="-1" title="Tawarkan jasa">
+        <span class="material-icons" aria-hidden="true">add_box</span> Tawarkan Jasa
+      </button>
+      <button id="tabFind" aria-controls="findSection" aria-selected="false" role="tab" tabindex="-1" title="Cari jasa">
+        <span class="material-icons" aria-hidden="true">search</span> Cari Jasa
+      </button>
+    </nav>
+    <main>
+      <section id="dashboardSection" role="tabpanel" aria-labelledby="tabDashboard">
+        <h2>Dashboard</h2>
+        <div class="dashboard-grid" aria-live="polite" aria-relevant="additions removals">
+          <div class="dash-card" aria-label="Total jasa yang ditawarkan">
+            <span class="material-icons">storefront</span>
+            <div class="dash-value" id="totalServices">0</div>
+            <div class="dash-label">Jasa Ditawarkan</div>
+          </div>
+          <div class="dash-card" aria-label="Total commission sudah diperoleh">
+            <span class="material-icons">account_balance_wallet</span>
+            <div class="dash-value" id="totalCommission">Rp0</div>
+            <div class="dash-label">Komisi Didapat</div>
+          </div>
+          <div class="dash-card" aria-label="Jumlah request jasa">
+            <span class="material-icons">shopping_cart</span>
+            <div class="dash-value" id="totalRequests">0</div>
+            <div class="dash-label">Request Jasa</div>
+          </div>
+        </div>
+        <h2>Riwayat Komisi</h2>
+        <div class="recent-list" id="commissionHistory" aria-live="polite" aria-relevant="additions"></div>
+        <p id="noCommissionMsg" style="display:none;">Belum ada riwayat komisi.</p>
+      </section>
+
+      <section id="offerSection" role="tabpanel" aria-labelledby="tabOffer" hidden>
+        <h2>Tawarkan Jasa Anda</h2>
+        <form id="offerForm" aria-label="Form tawarkan jasa">
+          <label for="serviceName">Nama Jasa:</label>
+          <input type="text" id="serviceName" name="serviceName" placeholder="Misal: Desain Grafis" required minlength="3" maxlength="50" autocomplete="off" />
+
+          <label for="serviceDesc">Deskripsi Jasa:</label>
+          <textarea id="serviceDesc" name="serviceDesc" placeholder="Deskripsikan jasa Anda..." required minlength="10" maxlength="300"></textarea>
+
+          <label for="servicePrice">Harga (Rp):</label>
+          <input type="number" id="servicePrice" name="servicePrice" placeholder="Misal: 500000" min="1000" max="100000000" required />
+
+          <button type="submit" aria-label="Tawarkan jasa">Tawarkan Jasa</button>
+        </form>
+      </section>
+
+      <section id="findSection" role="tabpanel" aria-labelledby="tabFind" hidden>
+        <h2>Cari Jasa yang Tersedia</h2>
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="Cari jasa berdasarkan nama..." aria-label="Cari jasa" autocomplete="off" />
+        </div>
+        <div id="servicesList" aria-live="polite" aria-relevant="additions"></div>
+        <p id="noServicesMsg" style="display:none; color:#bbb; user-select:none;">Tidak ada jasa ditemukan.</p>
+      </section>
+    </main>
+  </div>
+
+  <div id="commissionMessage" role="alert" aria-live="assertive"></div>
+
+  <script>
+    (() => {
+      const commissionRate = 0.1; // 10% commission
+
+      // Elements
+      const tabDashboardBtn = document.getElementById('tabDashboard');
+      const tabOfferBtn = document.getElementById('tabOffer');
+      const tabFindBtn = document.getElementById('tabFind');
+
+      const dashboardSection = document.getElementById('dashboardSection');
+      const offerSection = document.getElementById('offerSection');
+      const findSection = document.getElementById('findSection');
+
+      const offerForm = document.getElementById('offerForm');
+      const servicesListEl = document.getElementById('servicesList');
+      const searchInput = document.getElementById('searchInput');
+
+      const noServicesMsg = document.getElementById('noServicesMsg');
+
+      const totalServicesEl = document.getElementById('totalServices');
+      const totalCommissionEl = document.getElementById('totalCommission');
+      const totalRequestsEl = document.getElementById('totalRequests');
+      const commissionHistoryEl = document.getElementById('commissionHistory');
+      const noCommissionMsg = document.getElementById('noCommissionMsg');
+
+      const commissionMessage = document.getElementById('commissionMessage');
+
+      // Accessibility Tab Activation helper
+      function activateTab(tab) {
+        const tabs = ['dashboard', 'offer', 'find'];
+        tabs.forEach(t => {
+          const btn = document.getElementById('tab' + capitalize(t));
+          const section = document.getElementById(t + 'Section');
+          if (t === tab) {
+            btn.classList.add('active');
+            btn.setAttribute('aria-selected', 'true');
+            btn.tabIndex = 0;
+            section.hidden = false;
+          } else {
+            btn.classList.remove('active');
+            btn.setAttribute('aria-selected', 'false');
+            btn.tabIndex = -1;
+            section.hidden = true;
+          }
+        });
+
+        // Render content if needed
+        if (tab === 'find') {
+          renderServicesList();
+        } else if (tab === 'dashboard') {
+          renderDashboard();
+        }
+      }
+
+      function capitalize(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+      }
+
+      tabDashboardBtn.addEventListener('click', () => activateTab('dashboard'));
+      tabOfferBtn.addEventListener('click', () => activateTab('offer'));
+      tabFindBtn.addEventListener('click', () => activateTab('find'));
+
+      // Storage helpers
+      function loadServices() {
+        try {
+          const data = localStorage.getItem('servicesMarketplace');
+          if (!data) return [];
+          return JSON.parse(data);
+        } catch {
+          return [];
+        }
+      }
+
+      function saveServices(services) {
+        localStorage.setItem('servicesMarketplace', JSON.stringify(services));
+      }
+
+      function loadCommissionHistory() {
+        try {
+          const data = localStorage.getItem('commissionHistory');
+          if (!data) return [];
+          return JSON.parse(data);
+        } catch {
+          return [];
+        }
+      }
+
+      function saveCommissionHistory(history) {
+        localStorage.setItem('commissionHistory', JSON.stringify(history));
+      }
+
+      // Format currency IDR
+      function formatIDR(amount) {
+        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(amount);
+      }
+
+      // Render the services list in Find Services tab
+      function renderServicesList() {
+        const allServices = loadServices();
+        const keyword = searchInput.value.trim().toLowerCase();
+        let filteredServices = allServices;
+
+        if (keyword) {
+          filteredServices = allServices.filter(svc => svc.name.toLowerCase().includes(keyword));
+        }
+
+        servicesListEl.innerHTML = '';
+        noServicesMsg.style.display = filteredServices.length === 0 ? 'block' : 'none';
+
+        filteredServices.forEach(service => {
+          const card = document.createElement('div');
+          card.className = 'service-card';
+
+          const title = document.createElement('h3');
+          title.textContent = service.name;
+          card.appendChild(title);
+
+          const desc = document.createElement('p');
+          desc.textContent = service.description;
+          card.appendChild(desc);
+
+          const priceComm = document.createElement('div');
+          priceComm.className = 'price-commission';
+          priceComm.textContent = `Harga: ${formatIDR(service.price)}`;
+          card.appendChild(priceComm);
+
+          const btnRequest = document.createElement('button');
+          btnRequest.className = 'btn-request';
+          btnRequest.setAttribute('aria-label', `Request jasa ${service.name} seharga ${formatIDR(service.price)}`);
+          btnRequest.innerHTML = '<span class="material-icons" aria-hidden="true">payment</span> Request Jasa';
+          btnRequest.addEventListener('click', () => {
+            const commission = service.price * commissionRate;
+
+            // Save commission to history
+            const newEntry = {
+              id: Date.now().toString(),
+              serviceName: service.name,
+              commissionAmount: commission,
+              date: new Date().toISOString()
+            };
+            const history = loadCommissionHistory();
+            history.unshift(newEntry); // newest first
+            saveCommissionHistory(history);
+
+            // Show commission message
+            showCommissionMessage(`Anda mendapatkan komisi sebesar ${formatIDR(commission)} dari request jasa "${service.name}"`);
+            
+            // Update dashboard
+            renderDashboard();
+          });
+          card.appendChild(btnRequest);
+
+          servicesListEl.appendChild(card);
+        });
+      }
+
+            function showCommissionMessage(message) {
+        clearTimeout(commissionTimeout);
+        commissionMessage.textContent = message;
+        commissionMessage.classList.add('show');
+        
+        commissionTimeout = setTimeout(() => {
+          commissionMessage.classList.remove('show');
+        }, 5000);
+      }
+
+      // Render dashboard statistics
+      function renderDashboard() {
+        const services = loadServices();
+        const history = loadCommissionHistory();
+        
+        // Update total services
+        totalServicesEl.textContent = services.length;
+        
+        // Calculate total commission
+        const totalCommission = history.reduce((sum, entry) => sum + entry.commissionAmount, 0);
+        totalCommissionEl.textContent = formatIDR(totalCommission);
+        
+        // Update total requests (same as history entries)
+        totalRequestsEl.textContent = history.length;
+        
+        // Render commission history
+        commissionHistoryEl.innerHTML = '';
+        noCommissionMsg.style.display = history.length === 0 ? 'block' : 'none';
+        
+        history.slice(0, 10).forEach(entry => {
+          const item = document.createElement('div');
+          item.className = 'recent-item';
+          
+          const name = document.createElement('span');
+          name.className = 'recent-name';
+          name.textContent = entry.serviceName;
+          item.appendChild(name);
+          
+          const commission = document.createElement('span');
+          commission.className = 'recent-commission';
+          commission.textContent = formatIDR(entry.commissionAmount);
+          item.appendChild(commission);
+          
+          commissionHistoryEl.appendChild(item);
+        });
+      }
+
+      // Handle offer form submission
+      offerForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const serviceName = document.getElementById('serviceName').value.trim();
+        const serviceDesc = document.getElementById('serviceDesc').value.trim();
+        const servicePrice = parseInt(document.getElementById('servicePrice').value);
+        
+        if (!serviceName || !serviceDesc || isNaN(servicePrice)) {
+          showCommissionMessage('Harap isi semua field dengan benar!');
+          return;
+        }
+        
+        const newService = {
+          id: Date.now().toString(),
+          name: serviceName,
+          description: serviceDesc,
+          price: servicePrice
+        };
+        
+        const services = loadServices();
+        services.push(newService);
+        saveServices(services);
+        
+        // Reset form
+        offerForm.reset();
+        
+        // Show success message
+        showCommissionMessage(`Jasa "${serviceName}" berhasil ditambahkan!`);
+        
+        // Update dashboard
+        renderDashboard();
+      });
+
+      // Search functionality
+      searchInput.addEventListener('input', () => {
+        renderServicesList();
+      });
+
+      // Keyboard navigation for tabs
+      document.querySelectorAll('nav button').forEach(tab => {
+        tab.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            tab.click();
+          }
+        });
+      });
+
+      // Initialize the app
+      function init() {
+        renderDashboard();
+        renderServicesList();
+        activateTab('dashboard');
+      }
+
+      init();
+    })();
+  </script>
+</body>
+</html>
